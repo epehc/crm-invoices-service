@@ -38,6 +38,15 @@ Factura.init(
             type: DataTypes.ARRAY(DataTypes.JSONB),
             allowNull: false,
         },
+        fecha_vencimiento: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        iva: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+
     },
     {
         sequelize,

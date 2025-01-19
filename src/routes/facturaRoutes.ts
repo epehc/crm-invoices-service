@@ -6,7 +6,7 @@ import {
     getAllFacturas,
     getFacturaByFacturaId,
     getFacturasByClienteId,
-    getFacturasByNit, updateFactura
+    getFacturasByNit, getLatestFacturas, updateFactura
 } from "../controllers/facturaController";
 import {authenticateJWT} from "@epehc/sharedutilities/middlewares/authMiddleware";
 import {authorize} from "@epehc/sharedutilities/middlewares/authorize";
@@ -287,5 +287,13 @@ router.delete('/:factura_id',
         param('factura_id').isUUID()
     ],
     deleteFactura);
+
+router.get('/latest',
+    authenticateJWT,
+    authorize([UserRole.Admin]),
+    [
+        param('factura_id').isUUID()
+    ],
+    getLatestFacturas)
 
 export default router;

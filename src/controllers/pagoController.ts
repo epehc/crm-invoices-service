@@ -125,3 +125,7 @@ export const deletePago = async (req: Request, res: Response) => {
         res.status(500).json({error: 'Failed to delete pago'});
     }
 }
+
+export const procesarPago = async (req: Request, res: Response) => {
+    const {factura_id, monto} = req.body;
+}

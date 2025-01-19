@@ -144,3 +144,14 @@ export const deleteFactura = async (req: Request, res: Response) => {
         res.status(500).json({error: 'Failed to delete factura'});
     }
 }
+
+export const getLatestFacturas = async (req: Request, res: Response) => {
+    try {
+        const facturas = await Factura.findAll({order: [['fecha', 'DESC']], limit: 10});
+        logger.info('Facturas fetched successfully');
+        res.status(200).json(facturas);
+    } catch (error) {
+        logger.error('Error al obtener facturas: ', error);
+        res.status(500).json({error: 'Failed to fetch facturas'});
+    }
+}
