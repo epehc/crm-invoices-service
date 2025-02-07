@@ -1,28 +1,47 @@
 import {DataTypes, Model} from 'sequelize';
 import sequelize from '../database/db';
 
-class Factura extends Model {}
-
-//Estado anulada (de ser asi quitar de saldo pendiente)
-//Cuanto se facturo por mes
+class Factura extends Model {
+    public factura_id!: number;
+    public client_id!: string;
+    public cliente_nombre!: string;
+    public estado!: string;
+    public fecha!: string;
+    public fecha_vencimiento!: string;
+    public total!: number;
+    public iva!: number;
+    public total_sin_iva!: number;
+    public abonado!: number;
+    public saldo_pendiente!: number;
+    public nit!: string;
+    public descripcion!: string;
+}
 
 Factura.init(
     {
         factura_id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
             allowNull: false,
         },
-        fecha: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        cliente_id: {
+        client_id: {
             type: DataTypes.UUID,
             allowNull: false,
         },
-        nit: {
+        cliente_nombre: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        estado: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        fecha: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        fecha_vencimiento: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -30,22 +49,31 @@ Factura.init(
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        estado: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        productos: {
-            type: DataTypes.ARRAY(DataTypes.JSONB),
-            allowNull: false,
-        },
-        fecha_vencimiento: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
         iva: {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
+        total_sin_iva: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+        abonado: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+        saldo_pendiente: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+        nit: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },  
+        descripcion: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },   
+        
 
     },
     {
