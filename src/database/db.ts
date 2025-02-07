@@ -14,4 +14,20 @@ const sequelize = new Sequelize(
     }
 );
 
+//To force the database to sync with the models every time the server starts, uncomment the following code
+
+/* const syncDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected");
+
+    await sequelize.sync({ force: true }); 
+    console.log("Database synchronized");
+  } catch (error) {
+    console.error("Error syncing database:", error);
+  }
+};
+
+syncDB(); */
+
 export default sequelize
