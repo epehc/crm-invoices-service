@@ -1,10 +1,12 @@
 import {Router} from "express";
 import {body, param} from "express-validator";
 import {
+    anularFactura,
     createFactura,
     deleteFactura,
     getAllFacturas,
     getFacturaByFacturaId,
+    getFacturas,
     getFacturasByClienteId,
     getFacturasByNit, getLatestFacturas, updateFactura
 } from "../controllers/facturaController";
@@ -77,6 +79,11 @@ const router = Router();
 router.get('/',
     authenticateJWT,
     authorize([UserRole.Admin]),
+    getFacturas);
+
+router.get('/all',
+    authenticateJWT,
+    authorize([UserRole.Admin]),
     getAllFacturas);
 
 /**
@@ -107,7 +114,7 @@ router.get('/:factura_id',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        param('factura_id').isUUID()
+        param('factura_id').isNumeric()
     ],
     getFacturaByFacturaId);
 
@@ -137,11 +144,11 @@ router.get('/:factura_id',
  *       404:
  *         description: Factura not found
  */
-router.get('/cliente/:cliente_id',
+router.get('/cliente/:client_id',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        param('cliente_id').isUUID()
+        param('client_id').isUUID()
     ],
     getFacturasByClienteId);
 
@@ -204,13 +211,19 @@ router.post('/',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        body('factura_id').isUUID(),
-        body('fecha').isDate(),
-        body('cliente_id').isUUID(),
-        body('nit').isString(),
-        body('total').isFloat(),
-        body('estado').isString(),
-        body('productos').isArray(),
+        //body('factura_id').isNumeric(),
+        body('client_id').isUUID().notEmpty().withMessage('Cliente ID must be a valid UUID'),
+        body('cliente_nombre').isString().notEmpty().withMessage('Cliente nombre must be a string'),
+        body('estado').isString().notEmpty().withMessage('Estado must be a string'),
+        body('fecha').isString().notEmpty().withMessage('Fecha must be a string'),
+        body('fecha_vencimiento').isString().notEmpty().withMessage('Fecha vencimiento must be a string'),
+        body('total').isNumeric().notEmpty().withMessage('Total must be a number'),
+        body('iva').isNumeric().notEmpty().withMessage('IVA must be a number'),
+        body('total_sin_iva').isNumeric().notEmpty().withMessage('Total sin IVA must be a number'),
+        body('abonado').isNumeric().notEmpty().withMessage('Abonado must be a number'),
+        body('saldo_pendiente').isNumeric().notEmpty().withMessage('Saldo pendiente must be a number'),
+        body('nit').isString().notEmpty().withMessage('NIT must be a string'),
+        body('descripcion').isString().notEmpty().withMessage('Descripcion must be a string'),
     ],
     createFactura);
 
@@ -250,15 +263,29 @@ router.put('/:factura_id',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        param('factura_id').isUUID(),
-        body('fecha').isDate(),
-        body('cliente_id').isUUID(),
-        body('nit').isString(),
-        body('total').isFloat(),
+        param('factura_id').isNumeric(),
+        body('client_id').isUUID(),
+        body('cliente_nombre').isString(),
         body('estado').isString(),
-        body('productos').isArray(),
+        body('fecha').optional().isString(),
+        body('fecha_vencimiento').optional().isString(),
+        body('total').optional().isFloat(),
+        body('iva').optional().isFloat(),
+        body('total_sin_iva').optional().isFloat(),
+        body('abonado').optional().isFloat(),
+        body('saldo_pendiente').optional().isFloat(),
+        body('nit').isString(),
+        body('descripcion').optional().isString(),
     ],
     updateFactura);
+
+router.put('/anular-factura/:factura_id',
+    authenticateJWT,
+    authorize([UserRole.Admin]),
+    [
+        param('factura_id').isNumeric()
+    ],
+    anularFactura);
 
 /**
  * @swagger
@@ -284,7 +311,7 @@ router.delete('/:factura_id',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        param('factura_id').isUUID()
+        param('factura_id').isNumeric()
     ],
     deleteFactura);
 
@@ -292,7 +319,7 @@ router.get('/latest',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        param('factura_id').isUUID()
+        param('factura_id').isNumeric()
     ],
     getLatestFacturas)
 
