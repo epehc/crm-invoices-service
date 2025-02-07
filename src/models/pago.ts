@@ -1,14 +1,13 @@
 import {DataTypes, Model} from 'sequelize';
 import sequelize from '../database/db';
 
-//Para pagos
-//Abono
-//fecha de pago
-//monto de pago
-//monto retenido
-//boleta de pago (numero de deposito/ transferencia)
-
-class Pago extends Model {}
+class Pago extends Model {
+    public pago_id!: string;
+    public factura_id!: number;
+    public fecha!: string;
+    public monto!: number;
+    public boleta_pago!: string;
+}
 
 Pago.init(
     {
@@ -19,18 +18,14 @@ Pago.init(
             allowNull: false,
         },
         factura_id: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         fecha: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         monto: {
-            type: DataTypes.FLOAT,
-            allowNull: false,
-        },
-        monto_retenido: {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
