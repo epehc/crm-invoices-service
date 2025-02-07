@@ -136,7 +136,7 @@ router.get('/factura/:factura_id',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        param('factura_id').isUUID()
+        param('factura_id').isNumeric()
     ],
     getPagosByFacturaId);
 
@@ -144,7 +144,7 @@ router.get('/factura/:factura_id',
  * @swagger
  * /pagos:
  *   post:
- *     summary: Create a new pago
+ *     summary: Create a new pago and update the associated factura
  *     tags: [Pagos]
  *     requestBody:
  *       required: true
@@ -166,11 +166,10 @@ router.post('/',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        body('pago_id').isUUID(),
-        body('fecha').isDate(),
-        body('factura_id').isUUID(),
+        //body('pago_id').isUUID(),
+        body('fecha').isString().withMessage('Date format invalid'),
+        body('factura_id').isNumeric(),
         body('monto').isFloat(),
-        body('monto_retenido').isFloat(),
         body('boleta_pago').isString(),
     ],
     createPago);
@@ -213,9 +212,8 @@ router.put('/:pago_id',
     [
         param('pago_id').isUUID(),
         body('fecha').isDate(),
-        body('factura_id').isUUID(),
+        body('factura_id').isNumeric(),
         body('monto').isFloat(),
-        body('monto_retenido').isFloat(),
         body('boleta_pago').isString(),
     ],
     updatePago);
