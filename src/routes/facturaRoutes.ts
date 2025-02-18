@@ -1,14 +1,12 @@
 import {Router} from "express";
 import {body, param} from "express-validator";
 import {
-    anularFactura,
     createFactura,
     deleteFactura,
-    getAllFacturas,
     getFacturaByFacturaId,
     getFacturas,
     getFacturasByClienteId,
-    getFacturasByNit, getLatestFacturas, updateFactura
+    updateFactura
 } from "../controllers/facturaController";
 import {authenticateJWT} from "@epehc/sharedutilities/middlewares/authMiddleware";
 import {authorize} from "@epehc/sharedutilities/middlewares/authorize";
@@ -81,11 +79,6 @@ router.get('/',
     authorize([UserRole.Admin]),
     getFacturas);
 
-router.get('/all',
-    authenticateJWT,
-    authorize([UserRole.Admin]),
-    getAllFacturas);
-
 /**
  * @swagger
  * /facturas/{factura_id}:
@@ -152,38 +145,6 @@ router.get('/cliente/:client_id',
     ],
     getFacturasByClienteId);
 
-/**
- * @swagger
- * /facturas/nit/{nit}:
- *   get:
- *     summary: Get facturas by NIT
- *     tags: [Facturas]
- *     parameters:
- *       - in: path
- *         name: nit
- *         schema:
- *           type: string
- *         required: true
- *         description: The NIT of the cliente
- *     responses:
- *       200:
- *         description: The list of facturas by NIT
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Factura'
- *       404:
- *         description: Factura not found
- */
-router.get('/nit/:nit',
-    authenticateJWT,
-    authorize([UserRole.Admin]),
-    [
-        param('nit').isString()
-    ],
-    getFacturasByNit);
 
 /**
  * @swagger
@@ -211,7 +172,6 @@ router.post('/',
     authenticateJWT,
     authorize([UserRole.Admin]),
     [
-        //body('factura_id').isNumeric(),
         body('client_id').isUUID().notEmpty().withMessage('Cliente ID must be a valid UUID'),
         body('cliente_nombre').isString().notEmpty().withMessage('Cliente nombre must be a string'),
         body('estado').isString().notEmpty().withMessage('Estado must be a string'),
@@ -279,14 +239,6 @@ router.put('/:factura_id',
     ],
     updateFactura);
 
-router.put('/anular-factura/:factura_id',
-    authenticateJWT,
-    authorize([UserRole.Admin]),
-    [
-        param('factura_id').isNumeric()
-    ],
-    anularFactura);
-
 /**
  * @swagger
  * /facturas/{factura_id}:
@@ -314,13 +266,5 @@ router.delete('/:factura_id',
         param('factura_id').isNumeric()
     ],
     deleteFactura);
-
-router.get('/latest',
-    authenticateJWT,
-    authorize([UserRole.Admin]),
-    [
-        param('factura_id').isNumeric()
-    ],
-    getLatestFacturas)
 
 export default router;

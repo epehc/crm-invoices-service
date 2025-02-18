@@ -4,25 +4,6 @@ import logger from "../utils/logger";
 import {validationResult} from "express-validator";
 import { Op } from 'sequelize';
 
-
-export const getAllFacturas = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        logger.error('Error al cargar facturas: ', errors);
-        res.status(400).json({ errors: errors.array() });
-        return
-    }
-    try {
-        const facturas = await Factura.findAll();
-        logger.info('Facturas fetched successfully');
-        res.status(200).json(facturas);
-    } catch (error) {
-        logger.error('Error al obtener facturas: ', error);
-        res.status(500).json({error: 'Failed to fetch facturas'});
-    }
-}
-
-
 export const getFacturas = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
