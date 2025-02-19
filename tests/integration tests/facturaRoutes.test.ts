@@ -1,35 +1,57 @@
-jest.mock('../../node_modules/@epehc/sharedutilities/middlewares/authMiddleware', () => ({
-  authenticateJWT: (req: any, res: any, next: any) => next()
-}));
-jest.mock('../../node_modules/@epehc/sharedutilities/middlewares/authorize', () => ({
-  authorize: () => (req: any, res: any, next: any) => next()
-}));
+jest.mock(
+  "../../node_modules/@epehc/sharedutilities/middlewares/authMiddleware",
+  () => ({
+    authenticateJWT: (req: any, res: any, next: any) => next(),
+  })
+);
+jest.mock(
+  "../../node_modules/@epehc/sharedutilities/middlewares/authorize",
+  () => ({
+    authorize: () => (req: any, res: any, next: any) => next(),
+  })
+);
 
 import * as facturaController from "../../src/controllers/facturaController";
 // Stub controller functions to simulate responses.
-jest.spyOn(facturaController, "getFacturas").mockImplementation(async (req, res) => {
-  // Simulate paginated response.
-  res.status(200).json({
-    data: [{ factura_id: 1, client_id: "uuid1", cliente_nombre: "Test Factura" }],
-    total: 1,
-    totalPages: 1,
-    currentPage: 1,
+jest
+  .spyOn(facturaController, "getFacturas")
+  .mockImplementation(async (req, res) => {
+    // Simulate paginated response.
+    res.status(200).json({
+      data: [
+        { factura_id: 1, client_id: "uuid1", cliente_nombre: "Test Factura" },
+      ],
+      total: 1,
+      totalPages: 1,
+      currentPage: 1,
+    });
   });
-});
-jest.spyOn(facturaController, "getFacturasByClienteId").mockImplementation(async (req, res) => {
-  // Instead of using req.params.client_id, return a fixed value.
-  res.status(200).json([{ factura_id: 1, client_id: "uuid1", cliente_nombre: "Cliente Factura" }]);
-});
-jest.spyOn(facturaController, "createFactura").mockImplementation(async (req, res) => {
-  res.status(201).json({ factura_id: 10, ...req.body });
-});
-jest.spyOn(facturaController, "updateFactura").mockImplementation(async (req, res) => {
-  if (req.params.factura_id === "1") {
-    res.status(200).json({ factura_id: 1, ...req.body });
-  } else {
-    res.status(404).json({ error: "Factura not found" });
-  }
-});
+jest
+  .spyOn(facturaController, "getFacturasByClienteId")
+  .mockImplementation(async (req, res) => {
+    // Instead of using req.params.client_id, return a fixed value.
+    res.status(200).json([
+      {
+        factura_id: 1,
+        client_id: "uuid1",
+        cliente_nombre: "Cliente Factura",
+      },
+    ]);
+  });
+jest
+  .spyOn(facturaController, "createFactura")
+  .mockImplementation(async (req, res) => {
+    res.status(201).json({ factura_id: 10, ...req.body });
+  });
+jest
+  .spyOn(facturaController, "updateFactura")
+  .mockImplementation(async (req, res) => {
+    if (req.params.factura_id === "1") {
+      res.status(200).json({ factura_id: 1, ...req.body });
+    } else {
+      res.status(404).json({ error: "Factura not found" });
+    }
+  });
 
 import request from "supertest";
 import express from "express";
@@ -42,10 +64,14 @@ app.use("/facturas", facturaRoutes);
 
 describe("Factura Routes Integration Tests", () => {
   test("GET /facturas should return paginated facturas", async () => {
-    const res = await request(app).get("/facturas").query({ page: 1, pageSize: 12 });
+    const res = await request(app)
+      .get("/facturas")
+      .query({ page: 1, pageSize: 12 });
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      data: [{ factura_id: 1, client_id: "uuid1", cliente_nombre: "Test Factura" }],
+      data: [
+        { factura_id: 1, client_id: "uuid1", cliente_nombre: "Test Factura" },
+      ],
       total: 1,
       totalPages: 1,
       currentPage: 1,
@@ -55,7 +81,9 @@ describe("Factura Routes Integration Tests", () => {
   test("GET /facturas/cliente/uuid1 should return facturas by client_id", async () => {
     const res = await request(app).get("/facturas/cliente/uuid1");
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([{ factura_id: 1, client_id: "uuid1", cliente_nombre: "Cliente Factura" }]);
+    expect(res.body).toEqual([
+      { factura_id: 1, client_id: "uuid1", cliente_nombre: "Cliente Factura" },
+    ]);
   });
 
   test("POST /facturas should create a new factura and return it", async () => {
@@ -71,7 +99,7 @@ describe("Factura Routes Integration Tests", () => {
       abonado: 0,
       saldo_pendiente: 840,
       nit: "12345",
-      descripcion: "New factura test"
+      descripcion: "New factura test",
     };
     const res = await request(app).post("/facturas").send(newFactura);
     expect(res.status).toBe(201);
