@@ -21,7 +21,7 @@ setupSwagger(app);
 app.use('/facturas', facturaRoutes);
 app.use('/pagos', pagoRoutes)
 
-const PORT = 4004;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
